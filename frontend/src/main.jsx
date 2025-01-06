@@ -34,6 +34,10 @@ import EncryptPage from "./components/EncryptPage";
 import CreateABHAaadhar from "./components/createABHAaadhar"; // Import the new EncryptPage
 import "./index.css"; // Include Tailwind CSS
 import CreateABHAdl from "./components/createABHAdl";
+import CreateABHAdemoauth from "./components/createABHAdemoauth";
+import GenerateQR from "./components/generateQR";
+import GenerateAbhaCard from "./components/generateABHA";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Router>
@@ -43,6 +47,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/encrypt" element={<EncryptPage />} /> {/* New Route */}
         <Route path="/create-abha-aadhaar" element={<CreateABHAaadhar />} />
         <Route path="/create-abha-dl" element={<CreateABHAdl />} />
+        <Route path="/demo-auth" element={<CreateABHAdemoauth />} />
+        <Route path="/generate-qr" element={<GenerateQR />} />
+        <Route path="/generate-abha" element={<GenerateAbhaCard />} />
       </Routes>
     </Router>
   </React.StrictMode>

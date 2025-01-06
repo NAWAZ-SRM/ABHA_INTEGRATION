@@ -1,4 +1,4 @@
-import express from "express";
+import express, { application } from "express";
 import bodyParser from "body-parser";
 import fetch from "node-fetch";
 import cors from "cors";
@@ -371,6 +371,94 @@ app.post("/api/verify-documents-dl", (req, res) => {
     });
   }
 });
+
+// 5 - CREATE ABHA USING DEMO AUTH
+
+app.post('/demo-auth', async (req, res) => {
+  const { firstName, lastName, gender, address, dateOfBirth, pincode, mobileNumber } = req.body;
+
+  const requestBody = {
+    demo: {
+      firstName,
+      lastName,
+      gender,
+      address,
+      dateOfBirth,
+      pincode,
+      mobileNumber,
+    },
+    authMode: 'DEMOGRAPHICS',
+  };
+
+  try {
+    const response = await axios.post(
+      'https://<BASE_URL>/v1/abha/enrollment/demoAuth',
+      requestBody,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer <YOUR_ACCESS_TOKEN>`,
+          'X-Request-ID': '<UNIQUE_UUID>',
+          timestamp: new Date().toISOString(),
+        },
+      }
+    );
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Failed to create ABHA via Demo Auth' });
+  }
+});
+
+
+// 9 GENERATE QQR CODE application
+
+app.get('/generate-qr', async (req, res) => {
+  try {
+    const headers = {
+      'REQUEST-ID': '1823589b-cb13-479d-a471-7a57df569e38', // Example value
+      TIMESTAMP: new Date().toISOString(),
+      'X-token': req.headers['x-token'], // Pass user's X-token
+      Authorization: req.headers.authorization, // Pass user's access token
+    };
+
+    const apiResponse = await axios.get(
+      'https://example.com/v3/profile/account/qrCode', // Replace with your API URL
+      { headers }
+    );
+
+    res.status(200).json({ qrCode: apiResponse.data.qrCode }); // Adjust response based on API
+  } catch (error) {
+    console.error('Error generating QR Code:', error.message);
+    res.status(500).json({ error: 'Failed to generate QR Code' });
+  }
+});
+
+
+// 10 GET ABHA CARD 
+
+app.get('/generate-abha-card', async (req, res) => {
+  try {
+    const headers = {
+      'REQUEST-ID': '1823589b-cb13-479d-a471-7a57df569e38', // Replace with dynamically generated UUID
+      TIMESTAMP: new Date().toISOString(),
+      'X-token': req.headers['x-token'], // Pass the user's X-token
+      Authorization: req.headers.authorization, // Pass the user's access token
+    };
+
+    const apiResponse = await axios.get(
+      'https://example.com/abha/api/v3/profile/account/abha-card', // Replace with actual API URL
+      { headers }
+    );
+
+    res.status(200).json({ abhaCard: apiResponse.data }); // Adjust based on response structure
+  } catch (error) {
+    console.error('Error generating ABHA Card:', error.message);
+    res.status(500).json({ error: 'Failed to generate ABHA Card' });
+  }
+});
+
+
 
 // SERVER PORT CONFIGURATION
 const PORT = 3000;
